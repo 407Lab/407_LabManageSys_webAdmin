@@ -81,7 +81,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
-        removeToken()
+        removeToken() // 移除cookie token
         resolve()
       })
     },
