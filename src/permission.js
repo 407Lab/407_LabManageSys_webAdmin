@@ -5,7 +5,7 @@ import 'nprogress/nprogress.css' // progress bar style
 // import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // getToken from cookie
 
-NProgress.configure({ showSpinner: false })// NProgress configuration
+NProgress.configure({ showSpinner: false }) // NProgress configuration
 
 const LOGIN_PAGE_NAME = 'Login'
 
@@ -49,19 +49,23 @@ router.afterEach(() => {
 
 router.beforeEach((to, from, next) => {
   const token = getToken()
+  console.log('premission token', token)
   if (token) {
     if (to.name === LOGIN_PAGE_NAME) {
       next({ path: '/' })
     } else {
       if (store.getters.roles.length === 0) {
-        store.dispatch('GetInfo').then(res => {
-          next()
-        }).catch(err => {
-          console.error(err)
-          store.dispatch('FedLogOut').then(res => {
-            next('/')
+        store
+          .dispatch('GetInfo')
+          .then(res => {
+            next()
           })
-        })
+          .catch(err => {
+            console.error(err)
+            store.dispatch('FedLogOut').then(res => {
+              next('/')
+            })
+          })
       } else {
         next()
       }
