@@ -12,15 +12,14 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    console.log('req', config)
     if (store.getters.token) {
-      config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+      config.headers['authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config
   },
   error => {
     // Do something with request error
-    console.log(error) // for debug
+    console.error(error) // for debug
     Promise.reject(error)
   }
 )
@@ -29,12 +28,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     /**
-     * code为非20000是抛错 可结合自己业务进行修改
+     * code为非200是抛错 可结合自己业务进行修改
      */
-    const res = response.data
-    if (res.code !== 20000) {
+    const res = response.data.data
+    if (res.code !== 200) {
       Message({
-        message: res.message,
+        message: res.msg,
         type: 'error',
         duration: 5 * 1000
       })
@@ -57,16 +56,34 @@ service.interceptors.response.use(
       }
       return Promise.reject('error')
     } else {
-      return response.data
+      // return response.data
+      return Promise.resolve(response.data)
     }
   },
   error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    if (error.response.status) {
+      console.error('err' + error) // for debug
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      const status = error.response.status
+      switch (status) {
+        case 401:
+          // 未登录的处理
+          break
+        case 403:
+          // 权限不足的处理
+          break
+        case 404:
+          // 404请求不存在的处理
+          break
+        // 其他错误，直接抛出错误提示
+        default:
+        // 默认处理
+      }
+    }
     return Promise.reject(error)
   }
 )
