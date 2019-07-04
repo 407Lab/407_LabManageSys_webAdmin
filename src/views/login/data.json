@@ -1,0 +1,20 @@
+{
+  "loginSpecialities": [
+    {
+      "value": "大一",
+      "label": "大一"
+    },
+    {
+      "value": "大二",
+      "label": "大二"
+    },
+    {
+      "value": "大三",
+      "label": "大三"
+    },
+    {
+      "value": "大四",
+      "label": "大四"
+    }
+  ]
+}

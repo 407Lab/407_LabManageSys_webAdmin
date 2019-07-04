@@ -1,6 +1,21 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm"
+    <div class="login-navbar">
+      <div class="sign-switch">
+        <div style="height: 40px; margin-right: 20px;">
+          <el-button type="text"
+                     style="color: #ffffff;"
+                     @click="signInSwitchHandle()">Sign In</el-button>
+        </div>
+        <div style="height: 40px;">
+          <el-button plain
+                     style="backgroundColor: #14191f; color: #ffffff;"
+                     @click="signUpSwitchHandle()">Sign Up</el-button>
+        </div>
+      </div>
+    </div>
+    <el-form v-show="signInStatus"
+             ref="loginForm"
              :model="loginForm"
              :rules="loginRules"
              class="login-form"
@@ -45,11 +60,55 @@
         <span> password: 123456</span>
       </div>
     </el-form>
+    <el-form v-show="signUpStatus"
+             ref="signUpForm"
+             :model="signUpForm"
+             :rules="signUpRules"
+             class="sign-form"
+             auto-complete="on"
+             label-position="left">
+      <h3 class="title">407Lab</h3>
+      <el-form-item prop="username">
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-input v-model="signUpFprm.username"
+                  name="username"
+                  type="text"
+                  auto-complete="on"
+                  placeholder="username" />
+      </el-form-item>
+      <el-form-item prop="password">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+
+        <el-input v-model="signUpFprm.password"
+                  name="password"
+                  type="text"
+                  auto-complete="on"
+                  placeholder="password" />
+      </el-form-item>
+      <el-form-item prop="specialities">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-select v-model="signUpFprm.specialities"
+                   clearable
+                   placeholder="请选择年级">
+          <el-option v-for="item in dataJson.loginSpecialities"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
 // import { isvalidUsername } from "@/utils/validate";
+import dataJson from "./data.json";
 
 export default {
   name: "Login",
@@ -72,8 +131,8 @@ export default {
     return {
       // 登陆表单数据
       loginForm: {
-        username: "admin",
-        password: "admin"
+        username: "",
+        password: ""
       },
       // el-表单验证规则
       loginRules: {
@@ -82,10 +141,23 @@ export default {
         ],
         password: [{ required: true, trigger: "blur", validator: validatePass }]
       },
+      // 注册表单数据
+      signUpFprm: {
+        username: "",
+        password: "",
+        specialities: "", // 专业
+        grade: "", // 年级
+        lab: "",
+        skills: ""
+      },
       // 加载状态标志
       loading: false,
       pwdType: "password",
-      redirect: undefined
+      redirect: undefined,
+      // 登陆、注册按键切换
+      signInStatus: true,
+      signUpStatus: false,
+      dataJson // 数据外部json文件
     };
   },
   watch: {
@@ -108,6 +180,20 @@ export default {
       } else {
         this.pwdType = "password";
       }
+    },
+    /**
+     * @description 切换登陆账户
+     */
+    signInSwitchHandle() {
+      this.signInStatus = true;
+      this.signUpStatus = false;
+    },
+    /**
+     * @description 切换注册账户
+     */
+    signUpSwitchHandle() {
+      this.signInStatus = false;
+      this.signUpStatus = true;
     },
     /**
      * @description 登陆按键事件
@@ -158,6 +244,14 @@ $light_gray: #eee;
         -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-text-fill-color: #fff !important;
       }
+    }
+  }
+  .el-select {
+    display: inline-block;
+    height: 47px;
+    width: 90%;
+    .el-input {
+      width: 100%;
     }
   }
   .el-form-item {
@@ -220,6 +314,27 @@ $light_gray: #eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+  .login-navbar {
+    width: 100%;
+    height: 64px;
+    background-color: #14191f;
+    .sign-switch {
+      display: flex;
+      align-items: center;
+      float: right;
+      width: 200px;
+      height: 100%;
+    }
+  }
+  .sign-form {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 520px;
+    max-width: 100%;
+    padding: 35px 35px 15px 35px;
+    margin: 120px auto;
   }
 }
 </style>
