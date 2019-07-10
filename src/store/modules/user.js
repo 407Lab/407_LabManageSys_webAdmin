@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout, getInfo, register } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -46,7 +46,21 @@ const user = {
           })
       })
     },
-
+    // 注册
+    Register({ commit }, userInfo) {
+      return new Promise((resolve, reject) => {
+        try {
+          register(userInfo).then(response => {
+            const data = response.data
+            console.log('register', response, data)
+            resolve(response)
+          })
+        } catch (error) {
+          console.log(error)
+          reject()
+        }
+      })
+    },
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {

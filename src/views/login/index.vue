@@ -72,35 +72,94 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="signUpFprm.username"
+        <el-input v-model="signUpForm.username"
                   name="username"
                   type="text"
                   auto-complete="on"
-                  placeholder="username" />
+                  placeholder="用户名" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
 
-        <el-input v-model="signUpFprm.password"
+        <el-input v-model="signUpForm.password"
                   name="password"
-                  type="text"
+                  type="password"
                   auto-complete="on"
-                  placeholder="password" />
+                  placeholder="密码" />
+      </el-form-item>
+      <el-form-item prop="confirmpwd">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+
+        <el-input v-model="signUpForm.confirmpwd"
+                  name="confirmpwd"
+                  type="password"
+                  auto-complete="on"
+                  placeholder="确认密码" />
       </el-form-item>
       <el-form-item prop="specialities">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-select v-model="signUpFprm.specialities"
+        <el-select v-model="signUpForm.specialities"
                    clearable
-                   placeholder="请选择年级">
+                   placeholder="请选择专业">
           <el-option v-for="item in dataJson.loginSpecialities"
                      :key="item.value"
                      :label="item.label"
                      :value="item.value" />
         </el-select>
+      </el-form-item>
+      <el-form-item prop="grade">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-select v-model="signUpForm.grade"
+                   clearable
+                   placeholder="请选择年级">
+          <el-option v-for="item in dataJson.loginGrade"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="lab">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-select v-model="signUpForm.lab"
+                   clearable
+                   placeholder="请选择实验室">
+          <el-option v-for="item in dataJson.loginLab"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="skills">
+        <!-- <span class="svg-container"> -->
+        <!-- <svg-icon icon-class="cpu" /> -->
+        <i class="el-icon-cpu" />
+        <!-- </span> -->
+        <el-select v-model="signUpForm.skills"
+                   clearable
+                   placeholder="请选择你的技能">
+          <el-option v-for="item in dataJson.loginSkills"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading"
+                   type="primary"
+                   style="width:100%;"
+                   @click.native.prevent="handleSignUp">
+          Sign up
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -141,14 +200,20 @@ export default {
         ],
         password: [{ required: true, trigger: "blur", validator: validatePass }]
       },
+      // el-表单注册验证规则
+      signUpRules: {
+        username: [],
+        password: [{ required: true, trigger: "blur", validator: validatePass }]
+      },
       // 注册表单数据
-      signUpFprm: {
+      signUpForm: {
         username: "",
         password: "",
+        confirmpwd: "", // 确认密码
         specialities: "", // 专业
         grade: "", // 年级
         lab: "",
-        skills: ""
+        skills: "" // 技能  -- 软件、硬件、
       },
       // 加载状态标志
       loading: false,
@@ -216,6 +281,23 @@ export default {
           return false;
         }
       });
+    },
+    /**
+     * @description 注册按键事件
+     */
+    handleSignUp() {
+      this.loading = true;
+      // 验证 --> 拼装请求参数并请求 --> 提示注册返回消息
+      console.log("注册！！", this.signUpForm);
+      this.$store
+        .dispatch("Register", this.signUpForm)
+        .then(res => {
+          console.log("注册的数据", res);
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     }
   }
 };
@@ -279,7 +361,7 @@ $light_gray: #eee;
     width: 520px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    margin: 80px auto;
   }
   .tips {
     font-size: 14px;
@@ -334,7 +416,7 @@ $light_gray: #eee;
     width: 520px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    margin: 10px auto;
   }
 }
 </style>
