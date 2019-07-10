@@ -25,3 +25,14 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function register(params) {
+  return request({
+    url: '/user/register',
+    method: 'post',
+    data: {
+      ...params
+    }
+  })
+}
+

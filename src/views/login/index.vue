@@ -1,6 +1,21 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm"
+    <div class="login-navbar">
+      <div class="sign-switch">
+        <div style="height: 40px; margin-right: 20px;">
+          <el-button type="text"
+                     style="color: #ffffff;"
+                     @click="signInSwitchHandle()">Sign In</el-button>
+        </div>
+        <div style="height: 40px;">
+          <el-button plain
+                     style="backgroundColor: #14191f; color: #ffffff;"
+                     @click="signUpSwitchHandle()">Sign Up</el-button>
+        </div>
+      </div>
+    </div>
+    <el-form v-show="signInStatus"
+             ref="loginForm"
              :model="loginForm"
              :rules="loginRules"
              class="login-form"
@@ -45,11 +60,114 @@
         <span> password: 123456</span>
       </div>
     </el-form>
+    <el-form v-show="signUpStatus"
+             ref="signUpForm"
+             :model="signUpForm"
+             :rules="signUpRules"
+             class="sign-form"
+             auto-complete="on"
+             label-position="left">
+      <h3 class="title">407Lab</h3>
+      <el-form-item prop="username">
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-input v-model="signUpForm.username"
+                  name="username"
+                  type="text"
+                  auto-complete="on"
+                  placeholder="用户名" />
+      </el-form-item>
+      <el-form-item prop="password">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+
+        <el-input v-model="signUpForm.password"
+                  name="password"
+                  type="password"
+                  auto-complete="on"
+                  placeholder="密码" />
+      </el-form-item>
+      <el-form-item prop="confirmpwd">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+
+        <el-input v-model="signUpForm.confirmpwd"
+                  name="confirmpwd"
+                  type="password"
+                  auto-complete="on"
+                  placeholder="确认密码" />
+      </el-form-item>
+      <el-form-item prop="specialities">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-select v-model="signUpForm.specialities"
+                   clearable
+                   placeholder="请选择专业">
+          <el-option v-for="item in dataJson.loginSpecialities"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="grade">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-select v-model="signUpForm.grade"
+                   clearable
+                   placeholder="请选择年级">
+          <el-option v-for="item in dataJson.loginGrade"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="lab">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-select v-model="signUpForm.lab"
+                   clearable
+                   placeholder="请选择实验室">
+          <el-option v-for="item in dataJson.loginLab"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="skills">
+        <!-- <span class="svg-container"> -->
+        <!-- <svg-icon icon-class="cpu" /> -->
+        <i class="el-icon-cpu" />
+        <!-- </span> -->
+        <el-select v-model="signUpForm.skills"
+                   clearable
+                   placeholder="请选择你的技能">
+          <el-option v-for="item in dataJson.loginSkills"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading"
+                   type="primary"
+                   style="width:100%;"
+                   @click.native.prevent="handleSignUp">
+          Sign up
+        </el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
 // import { isvalidUsername } from "@/utils/validate";
+import dataJson from "./data.json";
 
 export default {
   name: "Login",
@@ -72,8 +190,8 @@ export default {
     return {
       // 登陆表单数据
       loginForm: {
-        username: "admin",
-        password: "admin"
+        username: "",
+        password: ""
       },
       // el-表单验证规则
       loginRules: {
@@ -82,6 +200,29 @@ export default {
         ],
         password: [{ required: true, trigger: "blur", validator: validatePass }]
       },
+      // el-表单注册验证规则
+      signUpRules: {
+        username: [],
+        password: [{ required: true, trigger: "blur", validator: validatePass }]
+      },
+      // 注册表单数据
+      signUpForm: {
+        username: "",
+        password: "",
+        confirmpwd: "", // 确认密码
+        specialities: "", // 专业
+        grade: "", // 年级
+        lab: "",
+        skills: "" // 技能  -- 软件、硬件、
+      },
+      // 加载状态标志
+      loading: false,
+      pwdType: "password",
+      redirect: undefined,
+      // 登陆、注册按键切换
+      signInStatus: true,
+      signUpStatus: false,
+      dataJson // 数据外部json文件
       // 加载状态标志
       loading: false,
       pwdType: "password",
@@ -110,6 +251,20 @@ export default {
       }
     },
     /**
+     * @description 切换登陆账户
+     */
+    signInSwitchHandle() {
+      this.signInStatus = true;
+      this.signUpStatus = false;
+    },
+    /**
+     * @description 切换注册账户
+     */
+    signUpSwitchHandle() {
+      this.signInStatus = false;
+      this.signUpStatus = true;
+    },
+    /**
      * @description 登陆按键事件
      */
     handleLogin() {
@@ -130,6 +285,23 @@ export default {
           return false;
         }
       });
+    },
+    /**
+     * @description 注册按键事件
+     */
+    handleSignUp() {
+      this.loading = true;
+      // 验证 --> 拼装请求参数并请求 --> 提示注册返回消息
+      console.log("注册！！", this.signUpForm);
+      this.$store
+        .dispatch("Register", this.signUpForm)
+        .then(res => {
+          console.log("注册的数据", res);
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     }
   }
 };
@@ -160,6 +332,14 @@ $light_gray: #eee;
       }
     }
   }
+  .el-select {
+    display: inline-block;
+    height: 47px;
+    width: 90%;
+    .el-input {
+      width: 100%;
+    }
+  }
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
@@ -185,7 +365,7 @@ $light_gray: #eee;
     width: 520px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    margin: 80px auto;
   }
   .tips {
     font-size: 14px;
@@ -220,6 +400,27 @@ $light_gray: #eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+  .login-navbar {
+    width: 100%;
+    height: 64px;
+    background-color: #14191f;
+    .sign-switch {
+      display: flex;
+      align-items: center;
+      float: right;
+      width: 200px;
+      height: 100%;
+    }
+  }
+  .sign-form {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 520px;
+    max-width: 100%;
+    padding: 35px 35px 15px 35px;
+    margin: 10px auto;
   }
 }
 </style>

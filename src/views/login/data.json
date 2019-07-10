@@ -1,0 +1,78 @@
+{
+  "loginSpecialities": [
+    {
+      "value": "自动化",
+      "label": "自动化"
+    },
+    {
+      "value": "电子信息",
+      "label": "电子信息"
+    },
+    {
+      "value": "电气及其自动化",
+      "label": "电气及其自动化"
+    },
+    {
+      "value": "通信工程",
+      "label": "通信工程"
+    },
+    {
+      "value": "机械及其自动化",
+      "label": "机械及其自动化"
+    }
+  ],
+  "loginGrade": [
+    {
+      "value": "大一",
+      "label": "大一"
+    },
+    {
+      "value": "大二",
+      "label": "大二"
+    },
+    {
+      "value": "大三",
+      "label": "大三"
+    },
+    {
+      "value": "大四",
+      "label": "大四"
+    }
+  ],
+  "loginLab": [
+    {
+      "value": "407",
+      "label": "实验室407"
+    },
+    {
+      "value": "409",
+      "label": "实验室409"
+    },
+    {
+      "value": "411",
+      "label": "实验室411"
+    }
+  ],
+  "loginSkills": [
+    {
+      "value": "mcusoftware",
+      "label": "嵌入式软件"
+    },
+    {
+      "value": "websoftware",
+      "label": "web前端软件"
+    },
+    {
+      "value": "hardware",
+      "label": "硬件"
+    },
+    {
+      "value": "mechanic",
+      "label": "机械"
+    },
+    {
+      "value": "other",
+      "label": "其他"
+    }
+  ]
+}
