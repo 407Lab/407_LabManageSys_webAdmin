@@ -56,6 +56,7 @@ module.exports = {
      * for example GitHub pages. If you plan to deploy your site to https://foo.github.io/bar/,
      * then assetsPublicPath should be set to "/bar/".
      * In most cases please use '/' !!!
+     * 静态资源地址为根目录使用 ‘/’ ， 如不是则带上对应路径‘/xxx/’
      */
     assetsPublicPath: '/admin/',
 
