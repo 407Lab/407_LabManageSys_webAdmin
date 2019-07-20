@@ -21,7 +21,7 @@
         </router-link>
         <el-dropdown-item>
           <span style="display:block;"
-                @click.stop="logout">LogOut</span>
+                @click="logout">LogOut</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -46,17 +46,11 @@ export default {
       this.$store.dispatch("ToggleSideBar");
     },
     logout() {
-      this.$store
-        .dispatch("FedLogOut")
-        .then(() => {
-          console.log(`/login?redirect=${this.$route.fullPath}`);
-          this.$router.push(`/login?redirect=${this.$route.fullPath}`);
-          location.reload(); // 为了重新实例化vue-router对象 避免bug
-        })
-        .catch(error => {
-          console.log("前端登出失败！！");
-          console.log(error);
-        });
+      console.log("ressss");
+      this.$store.dispatch("FedLogOut").then(() => {
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+        location.reload(); // 为了重新实例化vue-router对象 避免bug
+      });
     }
   }
 };

@@ -105,7 +105,7 @@ const user = {
 
     // 前端 登出
     FedLogOut({ commit }) {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         commit('SET_TOKEN', '')
         removeToken() // 移除cookie token
         resolve()
