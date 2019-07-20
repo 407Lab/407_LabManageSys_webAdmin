@@ -3,163 +3,185 @@
     <div class="login-navbar">
       <div class="sign-switch">
         <div style="height: 40px; margin-right: 20px;">
-          <el-button type="text"
-                     style="color: #ffffff;"
-                     @click="signInSwitchHandle()">Sign In</el-button>
+          <el-button type="text" 
+style="color: #ffffff;" @click="signInSwitchHandle()">Sign In</el-button>
         </div>
         <div style="height: 40px;">
-          <el-button plain
-                     style="backgroundColor: #14191f; color: #ffffff;"
-                     @click="signUpSwitchHandle()">Sign Up</el-button>
+          <el-button
+            plain
+            style="backgroundColor: #14191f; color: #ffffff;"
+            @click="signUpSwitchHandle()"
+          >Sign Up</el-button>
         </div>
       </div>
     </div>
-    <el-form v-show="signInStatus"
-             ref="loginForm"
-             :model="loginForm"
-             :rules="loginRules"
-             class="login-form"
-             auto-complete="on"
-             label-position="left">
+    <el-form
+      v-show="signInStatus"
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
       <h3 class="title">407Lab</h3>
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginForm.username"
-                  name="username"
-                  type="text"
-                  auto-complete="on"
-                  placeholder="username" />
+        <el-input
+          v-model="loginForm.username"
+          name="username"
+          type="text"
+          auto-complete="on"
+          placeholder="username"
+        />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :type="pwdType"
-                  v-model="loginForm.password"
-                  name="password"
-                  auto-complete="on"
-                  placeholder="password"
-                  @keyup.enter.native="handleLogin" />
-        <span class="show-pwd"
-              @click="showPwd">
+        <el-input
+          :type="pwdType"
+          v-model="loginForm.password"
+          name="password"
+          auto-complete="on"
+          placeholder="password"
+          @keyup.enter.native="handleLogin"
+        />
+        <span class="show-pwd" 
+@click="showPwd">
           <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading"
-                   type="primary"
-                   style="width:100%;"
-                   @click.native.prevent="handleLogin">
-          Sign in
-        </el-button>
+        <el-button
+          :loading="loading"
+          type="primary"
+          style="width:100%;"
+          @click.native.prevent="handleLogin"
+        >Sign in</el-button>
       </el-form-item>
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
-        <span> password: 123456</span>
+        <span>password: 123456</span>
       </div>
     </el-form>
-    <el-form v-show="signUpStatus"
-             ref="signUpForm"
-             :model="signUpForm"
-             :rules="signUpRules"
-             class="sign-form"
-             auto-complete="on"
-             label-position="left">
+    <el-form
+      v-show="signUpStatus"
+      ref="signUpForm"
+      :model="signUpForm"
+      :rules="signUpRules"
+      class="sign-form"
+      auto-complete="on"
+      label-position="left"
+    >
       <h3 class="title">407Lab</h3>
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="signUpForm.username"
-                  name="username"
-                  type="text"
-                  auto-complete="on"
-                  placeholder="用户名" />
+        <el-input
+          v-model="signUpForm.username"
+          name="username"
+          type="text"
+          auto-complete="on"
+          placeholder="用户名"
+        />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
 
-        <el-input v-model="signUpForm.password"
-                  name="password"
-                  type="password"
-                  auto-complete="on"
-                  placeholder="密码" />
+        <el-input
+          v-model="signUpForm.password"
+          name="password"
+          type="password"
+          auto-complete="on"
+          placeholder="密码"
+        />
       </el-form-item>
       <el-form-item prop="confirmpwd">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
 
-        <el-input v-model="signUpForm.confirmpwd"
-                  name="confirmpwd"
-                  type="password"
-                  auto-complete="on"
-                  placeholder="确认密码" />
+        <el-input
+          v-model="signUpForm.confirmpwd"
+          name="confirmpwd"
+          type="password"
+          auto-complete="on"
+          placeholder="确认密码"
+        />
       </el-form-item>
       <el-form-item prop="specialities">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-select v-model="signUpForm.specialities"
-                   clearable
-                   placeholder="请选择专业">
-          <el-option v-for="item in dataJson.loginSpecialities"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value" />
+        <el-select v-model="signUpForm.specialities" 
+clearable placeholder="请选择专业">
+          <el-option
+            v-for="item in dataJson.loginSpecialities"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item prop="grade">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-select v-model="signUpForm.grade"
-                   clearable
-                   placeholder="请选择年级">
-          <el-option v-for="item in dataJson.loginGrade"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value" />
+        <el-select v-model="signUpForm.grade" 
+clearable placeholder="请选择年级">
+          <el-option
+            v-for="item in dataJson.loginGrade"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item prop="lab">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-select v-model="signUpForm.lab"
-                   clearable
-                   placeholder="请选择实验室">
-          <el-option v-for="item in dataJson.loginLab"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value" />
+        <el-select v-model="signUpForm.lab" 
+clearable placeholder="请选择实验室">
+          <el-option
+            v-for="item in dataJson.loginLab"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item prop="skills">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
         <!-- <span class="svg-container"> -->
         <!-- <svg-icon icon-class="cpu" /> -->
-        <i class="el-icon-cpu" />
+        <!-- <i class="el-icon-cpu" /> -->
         <!-- </span> -->
-        <el-select v-model="signUpForm.skills"
-                   clearable
-                   placeholder="请选择你的技能">
-          <el-option v-for="item in dataJson.loginSkills"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value" />
+        <el-select v-model="signUpForm.skills" 
+clearable placeholder="请选择你的技能">
+          <el-option
+            v-for="item in dataJson.loginSkills"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading"
-                   type="primary"
-                   style="width:100%;"
-                   @click.native.prevent="handleSignUp">
-          Sign up
-        </el-button>
+        <el-button
+          :loading="loading"
+          type="primary"
+          style="width:100%;"
+          @click.native.prevent="handleSignUp"
+        >Sign up</el-button>
       </el-form-item>
     </el-form>
   </div>
