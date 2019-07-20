@@ -1,4 +1,3 @@
-
 import { login, logout, getInfo, register } from '@/api/login'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'

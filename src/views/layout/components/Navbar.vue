@@ -1,12 +1,11 @@
 <template>
   <div class="navbar">
-    <hamburger
-      :toggle-click="toggleSideBar"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-    />
+    <hamburger :toggle-click="toggleSideBar"
+               :is-active="sidebar.opened"
+               class="hamburger-container" />
     <breadcrumb />
-    <el-dropdown class="avatar-container" trigger="click">
+    <el-dropdown class="avatar-container"
+                 trigger="click">
       <div class="avatar-wrapper">
         <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" />
         <i class="el-icon-caret-bottom" />
@@ -41,10 +40,17 @@ export default {
       this.$store.dispatch("ToggleSideBar");
     },
     logout() {
-      this.$store.dispatch("LogOut").then(() => {
-        console.log("logout!!");
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
-      });
+      this.$store
+        .dispatch("FedLogOut")
+        .then(() => {
+          console.log(`/login?redirect=${this.$route.fullPath}`);
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+          location.reload(); // 为了重新实例化vue-router对象 避免bug
+        })
+        .catch(error => {
+          console.log("前端登出失败！！");
+          console.log(error);
+        });
     }
   }
 };

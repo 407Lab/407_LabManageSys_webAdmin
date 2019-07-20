@@ -223,10 +223,6 @@ export default {
       signInStatus: true,
       signUpStatus: false,
       dataJson // 数据外部json文件
-      // 加载状态标志
-      loading: false,
-      pwdType: "password",
-      redirect: undefined
     };
   },
   watch: {
