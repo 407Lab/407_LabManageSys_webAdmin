@@ -8,20 +8,17 @@
                  trigger="click">
       <div class="avatar-wrapper">
         <img :src="avatar+'?imageView2/1/w/80/h/80'"
-             class="user-avatar">
+             class="user-avatar" >
         <i class="el-icon-caret-bottom" />
       </div>
       <el-dropdown-menu slot="dropdown"
                         class="user-dropdown">
         <router-link class="inlineBlock"
                      to="/">
-          <el-dropdown-item>
-            Home
-          </el-dropdown-item>
+          <el-dropdown-item>Home</el-dropdown-item>
         </router-link>
-        <el-dropdown-item>
-          <span style="display:block;"
-                @click="logout">LogOut</span>
+        <el-dropdown-item @click.native="logout">
+          <span style="display:block;">LogOut</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
