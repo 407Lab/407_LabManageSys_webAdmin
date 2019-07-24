@@ -9,7 +9,6 @@ const service = axios.create({
   timeout: 5000 // 请求超时时间
 })
 
-
 // token过期的验证 ？？？
 
 // request拦截器
@@ -33,6 +32,7 @@ service.interceptors.response.use(
     /**
      * code为非200是抛错 可结合自己业务进行修改
      */
+    console.log(response, '拦截')
     const res = response.data.data
     if (res.code !== 200) {
       Message({
@@ -57,20 +57,21 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject('error')
+      return Promise.reject()
     } else {
       // return response.data
       return Promise.resolve(response.data)
     }
   },
   error => {
-    if (error.response.status) {
+    if (error) {
       console.error('err' + error) // for debug
       Message({
         message: error.message,
         type: 'error',
         duration: 5 * 1000
       })
+      if (!error.response.hasOwnProperty('status')) return
       const status = error.response.status
       switch (status) {
         case 401:

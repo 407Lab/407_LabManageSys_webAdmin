@@ -51,16 +51,16 @@ const user = {
     // 注册
     Register({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        try {
-          register(userInfo).then(response => {
+        register(userInfo)
+          .then(response => {
             const data = response.data
             console.log('register', response, data)
             resolve(response)
           })
-        } catch (error) {
-          console.log(error)
-          reject()
-        }
+          .catch(err => {
+            console.log(err)
+            reject(err)
+          })
       })
     },
 

@@ -64,7 +64,8 @@
              :rules="signUpRules"
              class="sign-form"
              auto-complete="on"
-             label-position="left">
+             label-position="left"
+             size="small">
       <h3 class="title">407Lab</h3>
       <el-form-item prop="username">
         <span class="svg-container">
@@ -266,11 +267,9 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          console.log(" sdsdadzz");
           this.$store
             .dispatch("Login", this.loginForm)
             .then(() => {
-              console.log(" login!!");
               this.loading = false;
               this.$router.push({ path: this.redirect || "/" });
             })
@@ -290,13 +289,26 @@ export default {
       this.loading = true;
       // 验证 --> 拼装请求参数并请求 --> 提示注册返回消息
       console.log("注册！！", this.signUpForm);
+
       this.$store
         .dispatch("Register", this.signUpForm)
         .then(res => {
           console.log("注册的数据", res);
+          if (res.data.code === 200) {
+            this.$notify({
+              message: "注册成功~",
+              type: "success"
+            });
+            this.loading = false;
+            setTimeout(() => {
+              this.signInSwitchHandle();
+            }, 1000);
+            // this.signInSwitchHandle(); // 切换回登陆界面
+          }
           this.loading = false;
         })
-        .catch(() => {
+        .catch(error => {
+          console.log(error);
           this.loading = false;
         });
     }
