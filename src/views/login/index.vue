@@ -235,6 +235,11 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    getUserList().then(res => {
+      console.log(res, "user list");
+    });
+  },
   methods: {
     /**
      * @description 是否显式的显示密码
