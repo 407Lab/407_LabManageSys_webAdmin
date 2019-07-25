@@ -236,9 +236,9 @@ export default {
     }
   },
   mounted() {
-    getUserList().then(res => {
-      console.log(res, "user list");
-    });
+    // getUserList().then(res => {
+    //   console.log(res, "user list");
+    // });
   },
   methods: {
     /**
