@@ -6,3 +6,11 @@ export function getUserList() {
     method: 'post'
   })
 }
+
+export function deleteUser(params) {
+  return request({
+    url: '/user/deluser',
+    method: 'post',
+    data: params
+  })
+}
