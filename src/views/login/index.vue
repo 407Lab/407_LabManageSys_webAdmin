@@ -53,18 +53,18 @@
                    style="width:100%;"
                    @click.native.prevent="handleLogin">Sign in</el-button>
       </el-form-item>
-      <div class="tips">
+      <!-- <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
         <span>password: 123456</span>
-      </div>
+      </div> -->
     </el-form>
     <el-form v-show="signUpStatus"
              ref="signUpForm"
              :model="signUpForm"
              :rules="signUpRules"
              class="sign-form"
-             auto-complete="on"
              label-position="left"
+             status-icon
              size="small">
       <h3 class="title">407Lab</h3>
       <el-form-item prop="username">
@@ -74,7 +74,8 @@
         <el-input v-model="signUpForm.username"
                   name="username"
                   type="text"
-                  auto-complete="on"
+                  clearable
+                  :readonly="hackAutoFillIpt"
                   placeholder="用户名" />
       </el-form-item>
       <el-form-item prop="password">
@@ -85,7 +86,7 @@
         <el-input v-model="signUpForm.password"
                   name="password"
                   type="password"
-                  auto-complete="on"
+                  clearable
                   placeholder="密码" />
       </el-form-item>
       <el-form-item prop="confirmpwd">
@@ -96,7 +97,7 @@
         <el-input v-model="signUpForm.confirmpwd"
                   name="confirmpwd"
                   type="password"
-                  auto-complete="on"
+                  clearable
                   placeholder="确认密码" />
       </el-form-item>
       <el-form-item prop="specialities">
@@ -142,10 +143,6 @@
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <!-- <span class="svg-container"> -->
-        <!-- <svg-icon icon-class="cpu" /> -->
-        <!-- <i class="el-icon-cpu" /> -->
-        <!-- </span> -->
         <el-select v-model="signUpForm.skills"
                    clearable
                    placeholder="请选择你的技能">
@@ -155,11 +152,14 @@
                      :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="form-item-btn">
         <el-button :loading="loading"
                    type="primary"
-                   style="width:100%;"
+                   size="medium"
                    @click.native.prevent="handleSignUp">Sign up</el-button>
+        <el-button @click="resetForm"
+                   size="medium"
+                   icon="el-icon-refresh-left">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -172,22 +172,45 @@ import dataJson from "./data.json";
 export default {
   name: "Login",
   data() {
-    // 自定义表单验证
+    // /**
+    //  * @description 密码输入验证
+    //  */
     // const validateUsername = (rule, value, callback) => {
-    //   if (!isvalidUsername(value)) {
-    //     callback(new Error("请输入正确的用户名"));
+    //   if (value === '') {
+    //     callback(new Error("请输入用户名"));
     //   } else {
     //     callback();
     //   }
     // };
+
+    /**
+     * @description 密码输入验证
+     */
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error("密码不能小于5位"));
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.signUpForm.confirmpwd !== "") {
+          this.$refs.signUpForm.validateField("confirmpwd");
+        }
+        callback();
+      }
+    };
+
+    /**
+     * @description 重复密码输入验证
+     */
+    const validatePassCfr = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.signUpForm.password) {
+        callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
       }
     };
     return {
+      hackAutoFillIpt: true,
       // 登陆表单数据
       loginForm: {
         username: "",
@@ -196,14 +219,33 @@ export default {
       // el-表单验证规则
       loginRules: {
         username: [
-          // { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: "blur", message: "请输入用户名！" }
         ],
         password: [{ required: true, trigger: "blur", validator: validatePass }]
       },
       // el-表单注册验证规则
       signUpRules: {
-        username: [],
-        password: [{ required: true, trigger: "blur", validator: validatePass }]
+        username: [
+          { required: true, trigger: "blur", message: "请输入用户名！" }
+        ],
+        password: [
+          { required: true, trigger: "blur", validator: validatePass }
+        ],
+        confirmpwd: [
+          { required: true, trigger: "blur", validator: validatePassCfr }
+        ],
+        specialities: [
+          { required: true, message: "专业不能为空！", trigger: "change" }
+        ],
+        grade: [
+          { required: true, message: "年级不能为空！", trigger: "change" }
+        ],
+        lab: [
+          { required: true, message: "实验室信息不能为空！", trigger: "change" }
+        ],
+        skills: [
+          { required: true, message: "技能信息不能为空！", trigger: "change" }
+        ]
       },
       // 注册表单数据
       signUpForm: {
@@ -236,10 +278,11 @@ export default {
     }
   },
   mounted() {
-    // getUserList().then(res => {
-    //   console.log(res, "user list");
-    // });
+    setTimeout(() => {
+      this.hackAutoFillIpt = false;
+    }, 1000);
   },
+  created() {},
   methods: {
     /**
      * @description 是否显式的显示密码
@@ -282,7 +325,6 @@ export default {
               this.loading = false;
             });
         } else {
-          console.error("error submit!!");
           return false;
         }
       });
@@ -291,31 +333,38 @@ export default {
      * @description 注册按键事件
      */
     handleSignUp() {
-      this.loading = true;
-      // 验证 --> 拼装请求参数并请求 --> 提示注册返回消息
-      console.log("注册！！", this.signUpForm);
-
-      this.$store
-        .dispatch("Register", this.signUpForm)
-        .then(res => {
-          console.log("注册的数据", res);
-          if (res.data.code === 200) {
-            this.$notify({
-              message: "注册成功~",
-              type: "success"
+      this.$refs.signUpForm.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          // 验证 --> 拼装请求参数并请求 --> 提示注册返回消息
+          this.$store
+            .dispatch("Register", this.signUpForm)
+            .then(res => {
+              console.log("注册的数据", res);
+              if (res.data.code === 200) {
+                this.$notify({
+                  message: "注册成功~",
+                  type: "success"
+                });
+                this.loading = false;
+                // 延时后切换回登陆界面
+                setTimeout(() => {
+                  this.signInSwitchHandle();
+                }, 1000);
+              }
+              this.loading = false;
+            })
+            .catch(error => {
+              console.log(error);
+              this.loading = false;
             });
-            this.loading = false;
-            setTimeout(() => {
-              this.signInSwitchHandle();
-            }, 1000);
-            // this.signInSwitchHandle(); // 切换回登陆界面
-          }
-          this.loading = false;
-        })
-        .catch(error => {
-          console.log(error);
-          this.loading = false;
-        });
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm() {
+      this.$refs.signUpForm.resetFields();
     }
   }
 };
@@ -330,7 +379,7 @@ $light_gray: #eee;
   .el-input {
     display: inline-block;
     height: 47px;
-    width: 85%;
+    width: 92.4%;
     input {
       background: transparent;
       border: 0px;
@@ -359,6 +408,10 @@ $light_gray: #eee;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
+  }
+  .form-item-btn {
+    background-color: #2d3a4b;
+    border: none;
   }
 }
 </style>
