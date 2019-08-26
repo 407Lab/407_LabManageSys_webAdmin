@@ -50,35 +50,28 @@
         </template>
       </el-table-column>
     </el-table>
-  </div> -->
+  </div>-->
   <el-container>
     <el-table :data="tableData"
               style="width: 100%"
               max-height="600">
       <el-table-column fixed
                        prop="username"
-                       label="用户名">
-      </el-table-column>
+                       label="用户名" />
       <el-table-column prop="specialities"
-                       label="专业">
-      </el-table-column>
+                       label="专业" />
       <el-table-column prop="grade"
-                       label="年级">
-      </el-table-column>
+                       label="年级" />
       <el-table-column prop="lab"
-                       label="实验室">
-      </el-table-column>
+                       label="实验室" />
       <el-table-column prop="skills"
-                       label="技能">
-      </el-table-column>
+                       label="技能" />
       <el-table-column fixed="right"
                        label="操作">
         <template slot-scope="scope">
-          <el-button @click.native.prevent="OnClickdeleteUser(scope.$index, scope.row)"
-                     type="text"
-                     size="small">
-            删除
-          </el-button>
+          <el-button type="text"
+                     size="small"
+                     @click.native.prevent="OnClickdeleteUser(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
